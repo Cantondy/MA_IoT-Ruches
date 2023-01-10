@@ -74,8 +74,8 @@ print("Humidity    : " + str(humidity) + "%")
 
 # Get light
 lt = LTR329ALS01(py)
-light = lt.lux()
-print("Light (Lux) : " + str(light))
+lux = lt.lux()
+print("Light (Lux) : " + str(lux))
 
 ###############################################
 
@@ -102,7 +102,7 @@ lpp.add_temperature(temperature)
 print('Add data [Temperature]')
 
 # Light
-lpp.add_luminosity(int(light))
+lpp.add_luminosity(lux)
 print('Add data [Light]')
 
 # Humidity

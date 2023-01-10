@@ -1,11 +1,8 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
-const Influx = require('@influxdata/influxdb-client')
+const Influx = require('influx')
 
 //This code writes data from IoT core rule via Lambda into InfluxDB 
 
-export const handler = async (event,context,callback) => {
+exports.handler = async (event,context,callback) => {
 
     var luminosityInputValue  = JSON.parse(event.luminosity);
     var humidityInputValue    = JSON.parse(event.humidity);
