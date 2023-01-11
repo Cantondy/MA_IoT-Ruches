@@ -75,13 +75,56 @@ lux = lt.lux()
 
 ### 2.2 The thing Network
 
+*The things Network* est un outil open source qui permet de gérer les devices et les passerelles en utilisant le protocole Lorawan. Dans notre projet, nous allons utiliser *The Things Network* comme une passerelle entre les capteurs et AWS Iot Core.
 
+Nous allons tout d’abord créer une application sous le nom «lora-project-hes» dans l’interface web de *The Things Network* puis nous configurons nos capteurs pycom (comme le montre la figure ci-dessous).
+
+![ttn-1](media/ttn-1.png)
+
+Nous allons utiliser le *CayenneLPP* pour coder les messages envoyés par les capteurs. Le code d’envoi de message au réseau *The Things Network* est le suivant :
+
+```python
+lpp = cayenneLPP.CayenneLPP(size = 100, sock = s)
+lpp.add_digital_input(True)
+
+# Temperature
+lpp.add_temperature(temperature)
+print('Add data [Temperature]')
+
+# Light
+lpp.add_luminosity(lux)
+print('Add data [Light]')
+
+# Humidity
+lpp.add_relative_humidity(humidity)
+print('Add data [Humidity]')
+
+# sending the packet via the socket
+lpp.send(reset_payload = True)
+print('Data sent')
+```
 
 
 
 ### 2.3 AWS IoT Core
 
+*AWS IoT Core* est une solution proposée par Amazone pour gérer les objets connectés et acheminer des milliards de messages vers les services AWS.
 
+La communauté de *The Things Nework* propose toute une architecture scalable qui peut être déployée directement sur *AWS IoT core* en utilisant *CloudFormation* et qui permet de gérer les applications créées précédemment sur l’interface de *The Things Network*.
+
+![awsiotcore-1](media/awsiotcore-1.png)
+
+La communication entre *The Things Network* et *AWS IoT Core* sera gérée par le protocole MQTT.
+
+Pour l’integration, il faut suivre les étapes décrites ici : https://www.thethingsindustries.com/docs/integrations/cloud-integrations/aws-iot/deployment-guide/
+
+Après l’intégration, nous pouvons ajouter des « Rules» qui permettent de gérer les messages reçus. Par exemple, dans la figure ci-dessous, nous avons configuré le système d’alerte qui permet d’avertir le client lorsque la température et l’humidité dépassent un certain seuil.
+
+Ces alertes seront envoyéés par mail au client et ce service sera géré par *AWS SNS* (Simple Notification Service). 
+
+![awsiotcore-2](media/awsiotcore-2.png)
+
+A partir des «Rule», nous pouvons choisir le service (Lamda function, SNS, DynamoDb…) pour gérer les messages reçus à partie de TTN. 
 
 
 
